@@ -1,0 +1,69 @@
+@bot.command()
+async def go(ctx):
+    author = ctx.author.name  # Mesaj yazarının adını alma
+    # Kullanıcının zaten bir Pokémon'u olup olmadığını kontrol edin. Eğer yoksa, o zaman...
+    if author not in Pokemon.pokemons.keys():
+        pokemon = Pokemon(author)  # Yeni bir Pokémon oluşturma
+        await ctx.send(await pokemon.info())  # Pokémon hakkında bilgi gönderilmesi
+        image_url = await pokemon.show_img()  # Pokémon resminin URL'sini alma
+        if image_url:
+            embed = discord.Embed()  # Gömülü mesajı oluşturma
+            embed.set_image(url=image_url)  # Pokémon'un görüntüsünün ayarlanması
+            await ctx.send(embed=embed)  # Görüntü içeren gömülü bir mesaj gönderme
+        else:
+            await ctx.send("Pokémonun görüntüsü yüklenemedi!")
+    else:
+        await ctx.send("Zaten kendi Pokémonunuzu oluşturdunuz!")  # Bir Pokémon'un daha önce yaratılıp yaratılmadığını gösteren bir mesaj
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        async def show_ability(self):
+        url = f'https://pokeapi.co/api/v2/pokemon/{self.pokemon_number}'  # İstek için URL API'si
+        async with aiohttp.ClientSession() as session:  # Bir HTTP oturumu açma
+            async with session.get(url) as response:  # GET isteği gönderme
+                if response.status == 200:
+                    data = await response.json()  # JSON yanıtının alınması ve kodunun çözülmesi
+                    return data['ability']['name']  
+                else:
+                    return "kusura bakma"  # İstek başarısız olursa varsayılan adı döndürür
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+async def show_ability(self):
+    url = f'https://pokeapi.co/api/v2/pokemon/{self.pokemon_number}'  # URL for the request
+    async with aiohttp.ClientSession() as session:  # Open an HTTP session
+        async with session.get(url) as response:  # Send a GET request
+            if response.status == 200:
+                data = await response.json()  # Parse the JSON response
+                abilities = data.get('abilities', [])  # Extract the list of abilities
+                if abilities:  # Check if there are abilities in the list
+                    return abilities[0]['ability']['name']  # Return the name of the first ability
+                else:
+                    return "Srry"
+            else:
+                return "Srry"  # Handle the error if the request fails
