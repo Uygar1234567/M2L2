@@ -1,5 +1,6 @@
 import aiohttp  # Eşzamansız HTTP istekleri için bir kütüphane
 import random
+from datetime import datetime, timedelta
 
 class Pokemon:
     pokemons = {}
@@ -10,10 +11,12 @@ class Pokemon:
         self.name = None
         self.power=random.randint(1, 100)
         self.hp=random.randint(1, 1000)
+        self.last_feed_time=datetime.now
         if pokemon_trainer not in Pokemon.pokemons:
             Pokemon.pokemons[pokemon_trainer] = self
         else:
             self = Pokemon.pokemons[pokemon_trainer]
+        
 
     async def get_name(self):
         # PokeAPI aracılığıyla bir pokémonun adını almak için eşzamansız bir yöntem
@@ -68,15 +71,26 @@ class Pokemon:
         else:
             enemy.hp = 0
             return f"Pokémon eğitmeni @{self.pokemon_trainer} @{enemy.pokemon_trainer}'ni yendi!"
+        
 
 
+    async def feed(self, feed_interval=20, hp_increase=10):
+        current_time = datetime.now()
+        delta_time = timedelta(seconds=feed_interval)
+        if (current_time - self.last_feed_time) > delta_time:
+            self.hp += hp_increase
+            self.last_feed_time = current_time
+            return f"Pokémon'un sağlığı geri yüklenir. Mevcut sağlık: {self.hp}"
+        else:
+            return f"Pokémonunuzu şu zaman besleyebilirsiniz: {current_time+delta_time}"
 
 
 
 
 
 class Wizard(Pokemon):
-    pass
+    def feed(self):
+        return super().feed(feed_interval=10)
     
 
 class Fighter(Pokemon):
@@ -87,6 +101,8 @@ class Fighter(Pokemon):
         self.güç -= süper_güç
         return sonuç + f"\nDövüşçü Pokémon süper saldırı kullandı. Eklenen güç: {süper_güç}"
     
+    def feed(self):
+        return super().feed(hp_increase=20)
 
 
 
