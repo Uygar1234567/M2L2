@@ -60,7 +60,15 @@ async def attack(ctx):
         await ctx.send("Saldırmak istediğiniz kullanıcıyı etiketleyerek belirtin.")  # Saldırmak için kullanıcıyı etiketleyerek belirtmesini isteriz
 
 
-
+@bot.command
+async def feed(ctx):
+    author=ctx.author.name
+    if author in Pokemon.pokemons:
+        pokemon=Pokemon.pokemons[author]
+        response=await pokemon.feed()
+        await ctx.send(response)
+    else:
+        await ctx.send("Pokemonun yok, !go komutunu kullan ve yine gel")
 
 
 
@@ -76,5 +84,13 @@ async def close_bot(ctx):
 @bot.command(name="aptal")
 async def name(ctx):
     await ctx.send("Kusura bakma")
+
+@bot.command(name="info")
+async def name(ctx):
+    if ctx.author.name in Pokemon.pokemons:
+        pok = Pokemon.pokemons[ctx.author.name]
+        await ctx.send()
+
+
 # Botun çalıştırılması
 bot.run(token)
