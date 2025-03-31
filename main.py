@@ -31,6 +31,7 @@ async def go(ctx):
         if chance==3:
             pokemon = Fighter(author)  # Yeni bir Pokémon oluşturma
         await ctx.send(await pokemon.info())  # Pokémon hakkında bilgi gönderilmesi
+        await ctx.send(await pokemon.show_ability())
         image_url = await pokemon.show_img()  # Pokémon resminin URL'sini alma
         if image_url:
             embed = discord.Embed()  # Gömülü mesajı oluşturma
@@ -81,16 +82,28 @@ async def close_bot(ctx):
 
 
 
-@bot.command(name="aptal")
+@bot.command(name="niye?")
 async def name(ctx):
     await ctx.send("Kusura bakma")
 
 @bot.command(name="info")
-async def name(ctx):
-    if ctx.author.name in Pokemon.pokemons:
-        pok = Pokemon.pokemons[ctx.author.name]
-        await ctx.send()
+async def info(ctx):
+    author=ctx.author.name
+    if author in Pokemon.pokemons:
+        pokemon=Pokemon.pokemons[author]        
+        await ctx.send(await pokemon.info())
+    else:
+        await ctx.send("Pokemonun yok, !go komutunu kullan ve yine gel")
 
+
+@bot.command(name="class")
+async def show_class(ctx):
+    author = ctx.author.name
+    if author in Pokemon.pokemons:
+        pokemon = Pokemon.pokemons[author]
+        await ctx.send(f"Senin Pokémon'un {pokemon.__class__.__name__} sınıfına ait!")
+    else:
+        await ctx.send("Önce bir Pokémon oluşturmalısın! !go komutunu kullan.")
 
 # Botun çalıştırılması
 bot.run(token)
